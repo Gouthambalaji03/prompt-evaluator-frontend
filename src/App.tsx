@@ -17,7 +17,7 @@ import type {
 const BANNER = [
   '  ____                            _     _____            _             _             ',
   ' |  _ \\ _ __ ___  _ __ ___  _ __ | |_  | ____|_   ____ _| |_   _  __ _| |_ ___  _ __ ',
-  ' | |_) | \'__/ _ \\| \'_ ` _ \\| \'_ \\| __| |  _| \\ \\ / / _` | | | | |/ _` | __/ _ \\| \'__|',
+  " | |_) | '__/ _ \\| '_ ` _ \\| '_ \\| __| |  _| \\ \\ / / _` | | | | |/ _` | __/ _ \\| '__|",
   ' |  __/| | | (_) | | | | | | |_) | |_  | |___ \\ V / (_| | | |_| | (_| | || (_) | |   ',
   ' |_|   |_|  \\___/|_| |_| |_| .__/ \\__| |_____| \\_/ \\__,_|_|\\__,_|\\__,_|\\__\\___/|_|   ',
   '                           |_|                                                       ',
@@ -128,7 +128,9 @@ export default function App() {
       }
       if (e.key === 'Escape') {
         const active = document.activeElement as HTMLElement | null;
-        if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) active.blur();
+        if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) {
+          active.blur();
+        }
       }
     };
     window.addEventListener('keydown', onKey);
@@ -136,20 +138,19 @@ export default function App() {
   }, [handleEvaluate]);
 
   return (
-    <div className="min-h-screen bg-bg text-fg relative">
+    <div className="relative min-h-screen bg-bg text-fg">
       <div className="scanlines" aria-hidden="true" />
       <div className="crt-glow" aria-hidden="true" />
 
-      <div className="min-h-screen relative z-10">
-        <main className="px-4 sm:px-8 lg:px-12 py-6 lg:py-8 pb-20 max-w-[1100px] w-full mx-auto">
-          {/* Top tmux-style status line */}
-          <div className="flex items-center justify-between gap-3 border-b border-border pb-2 mb-6 text-xs">
+      <div className="relative z-10 min-h-screen">
+        <main className="mx-auto w-full max-w-[1100px] px-3 py-5 pb-28 sm:px-8 sm:py-6 sm:pb-20 lg:px-12 lg:py-8">
+          <div className="mb-6 flex flex-col items-start gap-2 border-b border-border pb-2 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <div className="flex items-center gap-3">
               <span className="text-ember">❯</span>
               <span className="text-fg">prompt-evaluator</span>
               <span className="text-fg-mute">~/</span>
             </div>
-            <div className="flex items-center gap-3 text-fg-mute tabular">
+            <div className="flex w-full items-center justify-between gap-3 text-fg-mute tabular sm:w-auto sm:justify-end">
               <span className="hidden sm:inline">{clockText}</span>
               <span className="text-fg-faint">·</span>
               <span className={mongoOnline ? 'text-term-ok' : 'text-term-warn'}>
@@ -158,32 +159,40 @@ export default function App() {
             </div>
           </div>
 
-          {/* ASCII banner */}
-          <div className="mb-3 no-select overflow-hidden">
-            <pre className="ascii-head text-ember text-[10px] sm:text-[11px] lg:text-[12px] leading-[1.1]">
+          <div className="mb-3 overflow-hidden no-select">
+            <pre className="ascii-head text-[clamp(4px,1.45vw,12px)] leading-[1.1] text-ember">
               {BANNER.join('\n')}
             </pre>
           </div>
           <div className="ember-rule mb-6" aria-hidden="true" />
 
-          <div className="mb-10 text-sm text-fg-dim max-w-2xl">
+          <div className="mb-10 max-w-2xl text-sm text-fg-dim">
             <p className="comment-line">
-              A terminal for evaluating product requirements with an 8-dimension rubric grounded in PEEM (arXiv 2603.10477) and ISO/IEC 25010 · powered by Gemini.
+              A terminal for evaluating product requirements with an 8-dimension rubric
+              grounded in PEEM (arXiv 2603.10477) and ISO/IEC 25010 · powered by Gemini.
             </p>
-            <p className="mt-2 text-xs text-fg-mute">
-              <span className="text-ember">$</span> help
-              <span className="text-fg-dim ml-4">⌘↵</span>
-              <span className="text-fg-mute ml-2">run evaluation</span>
-              <span className="text-fg-dim ml-4">esc</span>
-              <span className="text-fg-mute ml-2">blur input</span>
-              <span className="text-fg-dim ml-4">click row</span>
-              <span className="text-fg-mute ml-2">expand reasoning</span>
-            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-fg-mute">
+              <span>
+                <span className="text-ember">$</span> help
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span className="text-fg-dim">⌘↵</span>
+                <span>run evaluation</span>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span className="text-fg-dim">esc</span>
+                <span>blur input</span>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span className="text-fg-dim">click row</span>
+                <span>expand reasoning</span>
+              </span>
+            </div>
           </div>
 
           {error && (
-            <div className="mb-6 term-frame border-term-err/60">
-              <div className="px-4 py-2 border-b border-term-err/40 text-xs flex items-center gap-3 bg-term-err/5">
+            <div className="term-frame mb-6 border-term-err/60">
+              <div className="flex items-center gap-3 border-b border-term-err/40 bg-term-err/5 px-4 py-2 text-xs">
                 <span className="text-term-err">✗</span>
                 <span className="text-term-err">[error]</span>
                 <span className="text-fg-dim">uncaught</span>
@@ -229,7 +238,7 @@ export default function App() {
             )}
           </div>
 
-          <footer className="mt-16 pt-4 border-t border-border text-xs text-fg-mute flex flex-wrap items-center justify-between gap-3">
+          <footer className="mt-16 flex flex-col gap-2 border-t border-border pt-4 text-xs text-fg-mute sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <span>
               <span className="text-ember">$</span> exit
               <span className="cursor-thin" />
@@ -239,23 +248,22 @@ export default function App() {
         </main>
       </div>
 
-      {/* Bottom status bar */}
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-bg-elev/95 backdrop-blur-[2px]">
-        <div className="flex items-center justify-between gap-4 px-4 py-1.5 text-xs tabular">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="flex flex-col gap-2 px-3 py-2 text-xs tabular sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4 sm:py-1.5">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
             <span className={backendOnline ? 'text-ember' : 'text-term-err'}>●</span>
             <span className="text-fg-dim">
               {evaluationSource === 'heuristic' ? 'heuristic' : model}
             </span>
             {evaluationSource === 'heuristic' && (
-              <span className="text-term-warn hidden sm:inline">· offline fallback</span>
+              <span className="hidden text-term-warn sm:inline">· offline fallback</span>
             )}
-            <span className="text-fg-faint hidden sm:inline">·</span>
+            <span className="hidden text-fg-faint sm:inline">·</span>
             <span className={`${mongoOnline ? 'text-term-ok' : 'text-fg-mute'} hidden sm:inline`}>
               mongo:{mongoOnline ? 'online' : 'offline'}
             </span>
-            <span className="text-fg-faint hidden md:inline">·</span>
-            <span className="text-fg-mute hidden md:inline">
+            <span className="hidden text-fg-faint md:inline">·</span>
+            <span className="hidden text-fg-mute md:inline">
               {!backendOnline
                 ? 'api offline'
                 : evaluating
@@ -265,11 +273,11 @@ export default function App() {
                 : 'idle'}
             </span>
           </div>
-          <div className="flex items-center gap-3 text-fg-mute shrink-0">
+          <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 text-fg-mute sm:justify-end">
             <span>
               <kbd className="text-fg-dim">⌘↵</kbd> run
             </span>
-            <span className="text-fg-faint hidden sm:inline">·</span>
+            <span className="hidden text-fg-faint sm:inline">·</span>
             <span className="hidden sm:inline">
               <kbd className="text-fg-dim">esc</kbd> blur
             </span>

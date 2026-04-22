@@ -10,22 +10,23 @@ function LoadingSkeleton() {
     '→ writing acceptance criteria',
     '→ composing final markdown',
   ];
+
   return (
     <section className="term-frame">
-      <header className="px-4 py-2.5 border-b border-border text-xs flex items-center gap-3">
-        <span className="text-ember animate-pulse-ring">●</span>
+      <header className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-2.5 text-xs">
+        <span className="animate-pulse-ring text-ember">●</span>
         <span className="text-fg-dim">[gen]</span>
         <span className="text-fg">compiling build specification…</span>
       </header>
-      <div className="p-6 space-y-3 text-sm text-fg-dim">
+      <div className="space-y-3 p-5 text-sm text-fg-dim sm:p-6">
         {lines.map((line, i) => (
           <div
             key={i}
-            className="flex items-center gap-2 opacity-0"
+            className="flex items-start gap-2 opacity-0"
             style={{ animation: `typein 0.25s ease-out ${i * 120}ms forwards` }}
           >
             <span className="text-ember">{i % 2 === 0 ? '⠿' : '·'}</span>
-            <span>{line}</span>
+            <span className="break-words">{line}</span>
           </div>
         ))}
       </div>
@@ -56,19 +57,25 @@ export default function GeneratedPrompt({
     if (!hasEvaluation) return null;
     return (
       <section className="term-frame">
-        <header className="px-4 py-2.5 border-b border-border text-xs flex items-center gap-3">
+        <header className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-2.5 text-xs">
           <span className="text-ember">●</span>
           <span className="text-fg-dim">[gen]</span>
           <span className="text-fg">ready</span>
         </header>
-        <div className="p-6 text-sm space-y-4">
-          <div className="text-fg-dim comment-line">
-            Send requirements + evaluation back through Gemini. Output: production-grade build prompt — stack, data models, api surface, acceptance criteria.
+        <div className="space-y-4 p-5 text-sm sm:p-6">
+          <div className="comment-line text-fg-dim">
+            Send requirements + evaluation back through Gemini. Output:
+            production-grade build prompt — stack, data models, api surface,
+            acceptance criteria.
           </div>
-          <div className="text-fg-mute text-xs">
+          <div className="text-xs text-fg-mute">
             <span className="text-ember">$</span> gemini generate --from-evaluation
           </div>
-          <button type="button" onClick={onGenerate} className="btn-primary">
+          <button
+            type="button"
+            onClick={onGenerate}
+            className="btn-primary w-full justify-center sm:w-auto"
+          >
             <span>▸</span>
             generate build prompt
           </button>
@@ -89,13 +96,15 @@ export default function GeneratedPrompt({
 
   return (
     <section className="term-frame">
-      <header className="px-4 py-2.5 border-b border-border flex items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-3 min-w-0">
+      <header className="flex flex-col gap-3 border-b border-border px-4 py-2.5 text-xs sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-3">
           <span className="text-ember">●</span>
           <span className="text-fg-dim">[gen]</span>
-          <span className="text-fg truncate">{generatedPrompt.title.toLowerCase().replace(/\s+/g, '-')}</span>
+          <span className="min-w-0 break-words text-fg">
+            {generatedPrompt.title.toLowerCase().replace(/\s+/g, '-')}
+          </span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           <div className="flex border border-border">
             {(['sections', 'prompt'] as const).map((mode) => (
               <button
@@ -103,52 +112,54 @@ export default function GeneratedPrompt({
                 type="button"
                 onClick={() => setView(mode)}
                 className={`px-2.5 py-1 text-xs transition-colors ${
-                  view === mode
-                    ? 'bg-ember text-bg'
-                    : 'text-fg-dim hover:text-ember'
+                  view === mode ? 'bg-ember text-bg' : 'text-fg-dim hover:text-ember'
                 }`}
               >
                 {mode}
               </button>
             ))}
           </div>
-          <button type="button" onClick={handleCopy} className="btn-term text-xs py-1">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="btn-term min-h-[34px] justify-center px-3 py-1 text-xs"
+          >
             {copied ? (
               <>
                 <span className="text-term-ok">✓</span> copied
               </>
             ) : (
               <>
-                <span>⎘</span> copy
+                <span>⏘</span> copy
               </>
             )}
           </button>
         </div>
       </header>
 
-      <div className="px-5 py-5 border-b border-border space-y-3">
+      <div className="space-y-3 border-b border-border px-4 py-4 sm:px-5 sm:py-5">
         <div>
-          <div className="text-xs text-fg-mute mb-1">
+          <div className="mb-1 text-xs text-fg-mute">
             <span className="text-ember">→</span> title
           </div>
-          <h3 className="text-fg text-lg">{generatedPrompt.title}</h3>
+          <h3 className="break-words text-lg text-fg">{generatedPrompt.title}</h3>
         </div>
         <div>
-          <div className="text-xs text-fg-mute mb-1">
+          <div className="mb-1 text-xs text-fg-mute">
             <span className="text-ember">→</span> summary
           </div>
-          <p className="text-fg-dim text-sm leading-relaxed">{generatedPrompt.summary}</p>
+          <p className="text-sm leading-relaxed text-fg-dim">{generatedPrompt.summary}</p>
         </div>
         {(generatedPrompt.suggestedTechStack?.length ?? 0) > 0 && (
           <div>
-            <div className="text-xs text-fg-mute mb-2">
+            <div className="mb-2 text-xs text-fg-mute">
               <span className="text-ember">→</span> tech-stack
             </div>
             <div className="flex flex-wrap gap-1.5">
               {generatedPrompt.suggestedTechStack.map((item, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 border border-border text-xs text-ember bg-ember/5"
+                  className="inline-flex items-center gap-1 border border-border bg-ember/5 px-2 py-0.5 text-xs text-ember"
                 >
                   <span className="text-ember/60">#</span>
                   {item}
@@ -160,9 +171,9 @@ export default function GeneratedPrompt({
       </div>
 
       {view === 'sections' ? (
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px]">
-          <div className="border-r-0 lg:border-r border-border">
-            <div className="px-4 py-2 border-b border-border text-xs text-fg-mute">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="border-r-0 border-border lg:border-r">
+            <div className="border-b border-border px-4 py-2 text-xs text-fg-mute">
               <span className="text-ember">→</span> sections ({generatedPrompt.sections?.length ?? 0})
             </div>
             {(generatedPrompt.sections || []).map((section, i) => {
@@ -172,14 +183,16 @@ export default function GeneratedPrompt({
                   <button
                     type="button"
                     onClick={() => setOpenIndex(open ? null : i)}
-                    className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-bg-hover transition-colors"
+                    className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-bg-hover"
                   >
-                    <span className="text-fg-mute text-xs tabular w-6">
+                    <span className="w-6 shrink-0 text-xs text-fg-mute tabular">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="flex-1 text-fg text-sm">{section.heading}</span>
+                    <span className="min-w-0 flex-1 break-words text-sm text-fg">
+                      {section.heading}
+                    </span>
                     <span
-                      className={`text-fg-mute text-xs transition-transform ${
+                      className={`text-xs text-fg-mute transition-transform ${
                         open ? 'rotate-90 text-ember' : ''
                       }`}
                     >
@@ -187,8 +200,8 @@ export default function GeneratedPrompt({
                     </span>
                   </button>
                   {open && (
-                    <div className="px-4 pb-4 pl-[45px] border-t border-border bg-bg-input/40">
-                      <pre className="text-fg-dim text-sm leading-relaxed whitespace-pre-wrap break-words pt-3">
+                    <div className="border-t border-border bg-bg-input/40 px-4 pb-4 pl-4 sm:pl-[45px]">
+                      <pre className="break-words pt-3 text-sm leading-relaxed text-fg-dim whitespace-pre-wrap">
                         {section.body}
                       </pre>
                     </div>
@@ -198,31 +211,31 @@ export default function GeneratedPrompt({
             })}
           </div>
 
-          <div className="px-4 py-4">
-            <div className="text-xs text-fg-mute mb-3">
+          <div className="border-t border-border px-4 py-4 lg:border-t-0">
+            <div className="mb-3 text-xs text-fg-mute">
               <span className="text-ember">→</span> acceptance-criteria
             </div>
             <ol className="space-y-2.5 text-sm">
               {(generatedPrompt.acceptanceCriteria || []).map((c, i) => (
-                <li key={i} className="flex gap-2.5">
-                  <span className="text-term-ok text-xs pt-0.5">[ ]</span>
-                  <span className="text-fg-dim leading-relaxed">{c}</span>
+                <li key={i} className="flex items-start gap-2.5">
+                  <span className="pt-0.5 text-xs text-term-ok">[ ]</span>
+                  <span className="leading-relaxed text-fg-dim">{c}</span>
                 </li>
               ))}
               {(!generatedPrompt.acceptanceCriteria ||
                 generatedPrompt.acceptanceCriteria.length === 0) && (
-                <li className="text-fg-mute text-xs">no criteria returned.</li>
+                <li className="text-xs text-fg-mute">no criteria returned.</li>
               )}
             </ol>
           </div>
         </div>
       ) : (
         <div className="p-4">
-          <div className="text-xs text-fg-mute mb-2">
+          <div className="mb-2 text-xs text-fg-mute">
             <span className="text-ember">$</span> cat build-prompt.md
           </div>
-          <div className="bg-bg-input border border-border p-4 max-h-[640px] overflow-auto">
-            <pre className="text-fg text-sm leading-relaxed whitespace-pre-wrap break-words">
+          <div className="max-h-[70vh] overflow-auto border border-border bg-bg-input p-4 sm:max-h-[640px]">
+            <pre className="break-words text-sm leading-relaxed text-fg whitespace-pre-wrap">
               {generatedPrompt.prompt}
             </pre>
           </div>

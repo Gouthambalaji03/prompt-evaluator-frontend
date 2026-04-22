@@ -15,12 +15,12 @@ export default function SourceBadge({ source, label }: Props) {
     : 'gemini was unavailable — compiled deterministically';
 
   return (
-    <div className="flex items-center gap-2 text-xs tabular text-fg-mute px-1">
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-1 text-xs text-fg-mute tabular">
       <span className={dot}>●</span>
       <span className="text-fg-faint">[{label}]</span>
       <span className={fg}>{tag}</span>
       <span className="text-fg-faint">·</span>
-      <span className="text-fg-mute hidden sm:inline">{hint}</span>
+      <span className="hidden text-fg-mute sm:inline">{hint}</span>
     </div>
   );
 }

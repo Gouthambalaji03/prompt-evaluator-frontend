@@ -35,23 +35,24 @@ export default function RequirementsInput({
 
   return (
     <section className="term-frame-primary">
-      <div className="p-5 sm:p-6 space-y-5">
+      <div className="space-y-5 p-4 sm:p-6">
         <div>
-          <div className="text-sm text-fg-dim mb-1.5">
+          <div className="mb-1.5 break-words text-sm text-fg-dim">
             <span className="text-ember">$</span>{' '}
             <span className="text-fg">prompt-evaluator</span>{' '}
             <span className="text-fg-dim">describe</span>{' '}
             <span className="text-fg-mute">--format=free-text</span>
           </div>
-          <div className="text-fg-dim text-sm mb-3 comment-line">
-            Describe what you want to build. Be specific — name users, flows, data, constraints.
+          <div className="comment-line mb-3 text-sm text-fg-dim">
+            Describe what you want to build. Be specific — name users, flows, data,
+            constraints.
           </div>
         </div>
 
-        <div className="term-frame-hi px-4 py-3 bg-bg-input focus-within:border-ember transition-colors">
-          <div className="flex gap-2 items-start">
+        <div className="term-frame-hi bg-bg-input px-4 py-3 transition-colors focus-within:border-ember">
+          <div className="flex items-start gap-2">
             <span
-              className={`text-ember shrink-0 select-none pt-[2px] font-medium ${
+              className={`shrink-0 select-none pt-[2px] font-medium text-ember ${
                 loading ? 'animate-pulse-ring' : ''
               }`}
             >
@@ -69,8 +70,8 @@ export default function RequirementsInput({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-3 text-fg-mute tabular">
+        <div className="flex flex-wrap items-start justify-between gap-3 text-xs sm:items-center">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-fg-mute tabular">
             <span>{wordCount} words</span>
             <span className="text-fg-faint">·</span>
             <span>{charCount} chars</span>
@@ -86,7 +87,7 @@ export default function RequirementsInput({
               <button
                 type="button"
                 onClick={() => setRequirements(EXAMPLE)}
-                className="hover:text-ember transition-colors"
+                className="transition-colors hover:text-ember"
               >
                 [load example]
               </button>
@@ -95,7 +96,7 @@ export default function RequirementsInput({
                 type="button"
                 onClick={() => setRequirements('')}
                 disabled={loading}
-                className="hover:text-ember transition-colors disabled:opacity-50"
+                className="transition-colors hover:text-ember disabled:opacity-50"
               >
                 [clear]
               </button>
@@ -103,11 +104,9 @@ export default function RequirementsInput({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end pt-2 border-t border-border">
-          <label className="block">
-            <span className="block text-xs text-fg-mute mb-1.5">
-              --target-platform
-            </span>
+        <div className="grid grid-cols-1 items-stretch gap-3 border-t border-border pt-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+          <label className="block min-w-0">
+            <span className="mb-1.5 block text-xs text-fg-mute">--target-platform</span>
             <select
               value={targetPlatform}
               onChange={(e) => setTargetPlatform(e.target.value)}
@@ -126,7 +125,7 @@ export default function RequirementsInput({
             type="button"
             onClick={onEvaluate}
             disabled={!canSubmit}
-            className="btn-primary"
+            className="btn-primary w-full justify-center sm:w-auto"
             title="Run evaluation  ⌘↵"
           >
             {loading ? (
@@ -138,7 +137,7 @@ export default function RequirementsInput({
               <>
                 <span>▸</span>
                 run evaluation
-                <span className="opacity-60 text-xs">⌘↵</span>
+                <span className="text-xs opacity-60">⌘↵</span>
               </>
             )}
           </button>
