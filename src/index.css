@@ -1,0 +1,348 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Keyframes referenced by raw CSS (not via Tailwind animate-* utilities).
+   Tailwind JIT only emits @keyframes when an animate-* utility uses them,
+   so declare these here to guarantee they exist in the compiled output. */
+@keyframes typein {
+  0% {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  50.01%, 100% {
+    opacity: 0;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --bg: #0a0908;
+    --bg-elev: #121110;
+    --border: #26231f;
+    --border-hi: #3a342d;
+    --fg: #e8e4dc;
+    --fg-dim: #a8a095;
+    --fg-mute: #6f685c;
+    --fg-faint: #413c34;
+    --ember: #d97757;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    font-feature-settings: 'ss02', 'ss03', 'cv06', 'calt';
+    font-variant-ligatures: contextual;
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: rgba(217, 119, 87, 0.35);
+    color: var(--fg);
+  }
+
+  textarea,
+  input,
+  select,
+  button {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-hi);
+  }
+}
+
+@layer components {
+  /* === Terminal chrome === */
+  .term-frame {
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+  }
+
+  .term-frame-hi {
+    border: 1px solid var(--border-hi);
+    background: var(--bg-elev);
+  }
+
+  /* Primary surface: brighter border + 2px ember left rail.
+     Turns the panel from a card into a focused cursor column
+     without adding shadows or gradients. */
+  .term-frame-primary {
+    border: 1px solid var(--border-hi);
+    border-left: 2px solid var(--ember);
+    background: var(--bg-elev);
+    transition: border-color 0.12s ease;
+  }
+  .term-frame-primary:focus-within {
+    border-color: var(--ember);
+  }
+
+  /* Thin ember rule — visual anchor beneath the ASCII banner. */
+  .ember-rule {
+    height: 1px;
+    width: 100%;
+    background: var(--ember);
+    opacity: 0.4;
+  }
+
+  .term-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 6px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* === Blinking block cursor === */
+  .cursor::after {
+    content: '▋';
+    margin-left: 2px;
+    color: var(--ember);
+    animation: blink 1s steps(2) infinite;
+  }
+
+  .cursor-thin::after {
+    content: '│';
+    margin-left: 1px;
+    color: var(--ember);
+    animation: blink 1s steps(2) infinite;
+  }
+
+  /* === ASCII section header === */
+  .ascii-head {
+    letter-spacing: 0;
+    white-space: pre;
+    line-height: 1.2;
+    user-select: none;
+  }
+
+  /* === CRT scanline overlay === */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(255, 255, 255, 0.012) 2px,
+      rgba(255, 255, 255, 0.012) 3px
+    );
+  }
+
+  .crt-glow {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 49;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 60%,
+      rgba(0, 0, 0, 0.45) 100%
+    );
+  }
+
+  /* === Buttons === */
+  .btn-term {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--border-hi);
+    color: var(--fg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
+  }
+  .btn-term:hover:not(:disabled) {
+    border-color: var(--ember);
+    color: var(--ember);
+  }
+  .btn-term:active:not(:disabled) {
+    background: rgba(217, 119, 87, 0.08);
+  }
+  .btn-term:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: var(--ember);
+    border: 1px solid var(--ember);
+    color: #0a0908;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #e89573;
+    border-color: #e89573;
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* === Input & textarea === */
+  .term-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--fg);
+    caret-color: var(--ember);
+    padding: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .term-input::placeholder {
+    color: var(--fg-mute);
+  }
+
+  .term-textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--fg);
+    caret-color: var(--ember);
+    padding: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.65;
+    resize: vertical;
+    min-height: 200px;
+  }
+  .term-textarea::placeholder {
+    color: var(--fg-mute);
+  }
+
+  /* === Prompt line === */
+  .prompt-line::before {
+    content: '❯ ';
+    color: var(--ember);
+    font-weight: 500;
+  }
+
+  .comment-line {
+    color: var(--fg-mute);
+  }
+  .comment-line::before {
+    content: '# ';
+    color: var(--fg-mute);
+  }
+
+  /* === Progress bar (block chars) === */
+  .score-bar {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+    white-space: pre;
+  }
+
+  /* === Typewriter list reveal === */
+  .reveal > * {
+    opacity: 0;
+    animation: typein 0.25s ease-out forwards;
+  }
+  .reveal > *:nth-child(1) { animation-delay: 0ms; }
+  .reveal > *:nth-child(2) { animation-delay: 40ms; }
+  .reveal > *:nth-child(3) { animation-delay: 80ms; }
+  .reveal > *:nth-child(4) { animation-delay: 120ms; }
+  .reveal > *:nth-child(5) { animation-delay: 160ms; }
+  .reveal > *:nth-child(6) { animation-delay: 200ms; }
+  .reveal > *:nth-child(7) { animation-delay: 240ms; }
+  .reveal > *:nth-child(8) { animation-delay: 280ms; }
+  .reveal > *:nth-child(9) { animation-delay: 320ms; }
+
+  /* === Select === */
+  .term-select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .term-select:focus {
+    outline: none;
+    border-color: var(--ember);
+  }
+
+  /* === Focus ring for framed regions === */
+  .focus-ember:focus-within {
+    border-color: var(--ember);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .no-select {
+    user-select: none;
+  }
+
+  /* Grade ring tones */
+  .grade-A { color: var(--ember); }
+  .grade-B { color: #d97757; }
+  .grade-C { color: #e5c07b; }
+  .grade-D { color: #e5a57b; }
+  .grade-F { color: #e06c75; }
+}
